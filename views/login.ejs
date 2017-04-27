@@ -35,8 +35,8 @@
     $(document).ready(function () {
         $("#login").ajaxForm({
             success:function (data) {
-                if(data.status==0){
-                    window.location.href='/'
+                if(data.code==0){
+                    window.location.href='/admin'
                 }else {
 
                 }

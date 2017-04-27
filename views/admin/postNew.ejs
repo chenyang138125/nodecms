@@ -1,0 +1,12 @@
+<%- header(pjax,user,"post")%>
+    <h1>撰写新文章</h1>
+    <form action="/admin/post" method="post">
+        <input type="text" placeholder="再次输入标题" name="title" required>
+        <textarea placeholder="摘要" name="degist"></textarea>
+        <textarea placeholder="内容" name="content"></textarea>
+        <input type="submit" value="提交">
+    </form>
+
+<%- footer(pjax)%>
+</body>
+</html>

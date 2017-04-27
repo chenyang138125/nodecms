@@ -14,6 +14,7 @@ var intercept =require('./core/Intercept');
 var app = express();
 var modules=require('./modules');
 var encryption=require('./core/encryption');
+var pjaxEjs=require('./core/pjaxEjs');
 modules.sequelize.sync().then(function () {
     modules.user.findAll().then(function (data) {
         if(data.length==0){
@@ -23,7 +24,7 @@ modules.sequelize.sync().then(function () {
 });
 
 
-
+pjaxEjs(app);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
