@@ -2,6 +2,7 @@
  * Created by Administrator on 2017/4/25.
  */
 var Q=require("q");
+var moment=require('moment');
 module.exports=function (sequelize, DataTypes) {
     var wp_post=sequelize.define("wp_post",{
         title:{type:DataTypes.STRING,allowNull:false},

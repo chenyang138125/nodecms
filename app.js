@@ -15,6 +15,7 @@ var app = express();
 var modules=require('./modules');
 var encryption=require('./core/encryption');
 var pjaxEjs=require('./core/pjaxEjs');
+var ueditor=require('./ueditor');
 modules.sequelize.sync().then(function () {
     modules.user.findAll().then(function (data) {
         if(data.length==0){
@@ -43,7 +44,7 @@ app.use(session({
   }),
     secret:"72D86ECF-0EB2-5968-4B03-B4B656B271E6",
     resave:false,
-    saveUninitialized:false
+    saveUninitialized:true
 }));
 
 
@@ -51,10 +52,10 @@ app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-app.use('/admin',intercept);
 app.use('/', views);
-app.use('/admin',admin);
-app.use('/v1',api);
+app.use('/admin',intercept.role,admin);
+app.use('/v1',intercept.role,api);
+ueditor(app);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

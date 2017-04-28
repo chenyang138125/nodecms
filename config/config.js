@@ -26,7 +26,8 @@ module.exports={
         post_statue:{
             PUBLISH:'publish',
             DRAFT:"draft"
-        }
+        },
+        FORMAT:"YYYY-MM-DD"
     },
     status:{
         SUCCESS:{code:0,msg:"OK"},

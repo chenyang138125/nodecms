@@ -1,12 +1,29 @@
+<%- include heade%>
 <%- header(pjax,user,"post")%>
     <h1>撰写新文章</h1>
-    <form action="/admin/post" method="post">
+    <form action="/v1/post" method="post" id="newPost">
         <input type="text" placeholder="再次输入标题" name="title" required>
-        <textarea placeholder="摘要" name="degist"></textarea>
-        <textarea placeholder="内容" name="content"></textarea>
+        <textarea placeholder="摘要" name="degest"></textarea>
         <input type="submit" value="提交">
+        <script id="editor" type="text/plain" style="width:1024px;height:500px;" name="content"></script>
     </form>
 
 <%- footer(pjax)%>
+<script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.all.min.js"> </script>
+<script type="text/javascript" charset="utf-8" src="/ueditor/lang/zh-cn/zh-cn.js"> </script>
+<script>
+    var ue = UE.getEditor('editor');
+    $(document).ready(function () {
+        var option={
+            success:function (data) {
+                if(data.code==0){
+                    window.location.href='/admin/post/edit/'+data.data.id;
+                }
+            }
+        };
+        $("#newPost").ajaxForm(option);
+    })
+</script>
 </body>
 </html>

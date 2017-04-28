@@ -9,11 +9,13 @@
     "body-parser": "~1.16.0",
     "connect-redis": "^3.0.2",
     "cookie-parser": "~1.4.3",
+    "date-utils": "^1.2.21",
     "debug": "~2.6.0",
     "ejs": "~2.5.5",
     "express": "~4.14.1",
     "express-session": "^1.15.2",
     "less-middleware": "~2.2.0",
+    "moment": "^2.8.4",
     "morgan": "~1.7.0",
     "mysql": "^2.13.0",
     "pinyin": "^2.8.3",
@@ -21,6 +23,7 @@
     "redis": "^2.5.0-1",
     "sequelize": "^3.30.4",
     "serve-favicon": "~2.3.2",
+    "ueditor": "^1.2.2",
     "underscore": "^1.8.3"
   }
 }

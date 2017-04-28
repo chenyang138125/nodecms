@@ -3,7 +3,7 @@
  */
 module.exports=function (statue,data,msg) {
     return {
-        status:statue,
+        code:statue,
         data:data,
         msg:msg
     }

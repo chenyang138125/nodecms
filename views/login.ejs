@@ -24,6 +24,7 @@
                 <div class="col-xs-6">
                     <button type="submit">登录</button>
                 </div>
+                <input type="checkbox" name="rememberme"> 记住
 
             </div>
         </div>
@@ -32,13 +33,26 @@
 <script src="/lib/jquery-form.min.js"></script>
 
 <script>
+    function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);  //获取url中"?"符后的字符串并正则匹配
+        var context = "";
+        if (r != null)
+            context = r[2];
+        reg = null;
+        r = null;
+        return context == null || context == "" || context == "undefined" ? "" : context;
+    }
     $(document).ready(function () {
         $("#login").ajaxForm({
             success:function (data) {
                 if(data.code==0){
-                    window.location.href='/admin'
-                }else {
-
+                    var redirect=GetQueryString("redirect_to");
+                    if(redirect){
+                        window.location.href=redirect;
+                    }else {
+                        window.location.href='/admin'
+                    }
                 }
             }
 

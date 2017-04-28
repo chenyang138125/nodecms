@@ -7,6 +7,7 @@ var Q = require('q');
 var _ = require('underscore');
 var cache = require('../catcheData');
 var pinyin=require('pinyin');
+var moment=require('date-utils');
 module.exports = {
     /**
      * 获取已发布文章列表 放回信息包含：标题，id，分类，标签，摘要，发布时间，跟新时间.
@@ -98,13 +99,19 @@ module.exports = {
      */
     postPost: function (post) {
         if (post.id) {
-            return modules.wp_post.updatePost(post);
+            var defer=Q.defer();
+             modules.wp_post.updatePost(post).then(function () {
+                 defer.resolve({id:post.id})
+             });
+             return defer;
         } else {
             var pinyinStr=pinyin(post.title,{style:pinyin.STYLE_NORMAL});
-            post.link='';
+            var date=new Date();
+            post.link='/post/'+date.toFormat("YYYY/MM/DD")+"/";
             pinyinStr.map(function (one) {
                 post.link+=one[0];
             });
+            post.link+="/";
             return modules.wp_post.createPost(post);
         }
     },
@@ -128,6 +135,9 @@ module.exports = {
             offset: page * limit,
             paranoid: paranoid
         })
+    },
+    findOne:function (where) {
+        return modules.wp_post.findOne({where:where});
     }
 
 };

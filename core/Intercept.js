@@ -1,13 +1,20 @@
 /**
  * Created by Administrator on 2017/4/24.
  */
-var express = require('express');
-var router = express.Router();
-    router.all('/*',function (req,res,next) {
-        if(req.session.user &&　req.session.user.role=='admin'){
-            next()
+var role=function (req,res,next) {
+    if(req.originalUrl=="/v1/login") {
+        next();
+        return;
+    }
+    if(req.session.user && req.session.user.role=="admin"){
+        next();
+    }else {
+        if(req.method.toLowerCase()=="post"){
+            res.sendStatus(401);
         }else {
-            res.redirect('/login')
+            res.redirect('/login?redirect_to='+req.originalUrl);
         }
-    });
-    module.exports=router;
+    }
+};
+module.exports=exports;
+exports.role=role;
