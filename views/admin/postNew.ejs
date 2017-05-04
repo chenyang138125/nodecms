@@ -4,10 +4,51 @@
     <form action="/v1/post" method="post" id="newPost">
         <input type="text" placeholder="再次输入标题" name="title" required>
         <textarea placeholder="摘要" name="degest"></textarea>
-        <input type="submit" value="提交">
+        <div class="extra">
+            <div class="form-group">
+                <label for="category">分类</label>
+                <select id="category" class="form-control" name="category">
+                    <option value="">分类</option>
+                    <%for(var key in categories){%>
+                        <option value="<%=categories[key].id%>"><%=categories[key].name%></option>
+                    <%}%>
+                </select>
+            </div>
+        </div>
         <script id="editor" type="text/plain" style="width:1024px;height:500px;" name="content"></script>
+        <input type="submit" value="提交">
     </form>
-
+    <div class="add-custom">
+        <h3>添加自定义信息</h3>
+        <form id="custom-form">
+            <div class="form-group">
+                <label for="ext-name"></label>
+                <input id="ext-name" type="text" name="etx-name" required>
+                <p class="help-block">仅在管理界面显示，前台不展示该数据</p>
+            </div>
+            <div class="form-group">
+                <label>别名</label>
+                <input type="text" onkeyup="value=value.replace(/[^a-z|A-Z|0-9|\-|_]/g, '')" name="ext-key">
+                <p class="help-block">前台获取数据的字段名：只能输入字母，数字，下划线，中线</p>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="ext-required"> 是否必填
+                </label>
+            </div>
+           <div class="form-group">
+               <label for="ext-type">输入类型</label>
+               <select name="etx-type" class="form-control" id="ext-type">
+                   <option value="">输入类型</option>
+                   <option value="text">文本</option>
+                   <option value="textarea">多段文本</option>
+                   <option value="checkbox">选择</option>
+                   <option value="image">图像(返回的URL)</option>
+               </select>
+           </div>
+            <button type="submit">添加</button>
+        </form>
+    </div>
 <%- footer(pjax)%>
 <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.config.js"></script>
 <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.all.min.js"> </script>
@@ -15,14 +56,14 @@
 <script>
     var ue = UE.getEditor('editor');
     $(document).ready(function () {
-        var option={
-            success:function (data) {
-                if(data.code==0){
-                    window.location.href='/admin/post/edit/'+data.data.id;
-                }
-            }
-        };
-        $("#newPost").ajaxForm(option);
+        $("#newPost").cusAjaxForm(function (data) {
+            window.location.href='/admin/post/edit/'+data.id;
+        });
+    })
+    $("#custom").validate({
+        submitHandler:function () {
+            var formData=$("#custom").serializeArray();
+        }
     })
 </script>
 </body>

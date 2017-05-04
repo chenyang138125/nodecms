@@ -4,32 +4,34 @@
 var modules=require('../../modules');
 var config=require('../../config/config');
 var Q=require('q');
+var cache=require('../catcheData');
 module.exports={
     createCategory:function (name,parent) {
-        return modules.wp_category.create({name:name,type:"tag",parent:parent});
+        var that=this;
+       return modules.wp_category.create({name:name,type:"category",parent:0})
+            .then(function (data) {
+                 that.resetCatgoryCache();
+                 return data;
+            });
     },
     deleteCategory:function (id) {
-     sequelize.transaction(function (t) {
-            // 注意，这时使用的是callback而不是promise.then()
-            return modules.wp_category.destroy({where:{id:id},transaction:t})
-                .then(function () {
-                    modules.wp_post.update({category:""},{where:{category:id},transaction:t})
-                })
-        }).then(function () {
-            // Committed
-        }).catch(function (err) {
-            // Rolled back
-            console.error(err);
-        });
+        var that=this;
+       return modules.wp_category.destroy({where:{id:id}}).then(function () {
+           return  that.resetCatgoryCache();
+       });
     },
-    updateCategory:function () {
-
+    updateCategory:function (id,data) {
+        var that=this;
+        return modules.wp_category.update(data,{where:{id:id}}).then(function () {
+            return  that.resetCatgoryCache();
+        });
     },
     getCategorys:function () {
         var defer=Q.defer();
         modules.wp_category.findAll({where:{type:'category'}})
             .then(function (data) {
-                data =data ||[];
+                defer.resolve(data || []);
+               /* data =data ||[];
                 //建立分类树形结构
                 var pos={};
                 var tree=[];
@@ -68,28 +70,28 @@ module.exports={
                         i=0;
                     }
                 }
-                defer.resolve(tree);
+                defer.resolve(tree);*/
             }).catch(function (err) {
             defer.reject(err);
         });
         return defer.promise;
-    },
-    createTag:function () {
-
-    },
-    deleteTag:function () {
-
-    },
-    getTags:function () {
-
-    },
-    updateTag:function () {
-
     },
     updateMenu:function () {
 
     },
     getMenu:function () {
         
+    },
+    resetCatgoryCache:function () {
+        var defer=Q.defer();
+        this.getCategorys().then(function (data) {
+            cache.categories=data || [];
+            cache.categoryMap={};
+            cache.categories.map(function (one) {
+                cache.categoryMap[one.id]=one.name;
+            });
+            defer.resolve();
+        });
+        return defer.promise;
     }
 };

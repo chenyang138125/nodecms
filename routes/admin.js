@@ -4,7 +4,9 @@
 var express = require('express');
 var router = express.Router();
 var postApi=require('../core/api/post');
+var adminApi=require('../core/api/admin');
 var cacheData=require('../core/catcheData');
+
 router.get('/',function (req,res,next) {
     req.viewUrl='admin/index';
     next();
@@ -13,16 +15,9 @@ router.get('/menu',function (req,res,next) {
     
 });
 router.get('/category',function (req,res,next) {
-
-});
-router.get('/category/edit/:id',function (req,res,next) {
-
-});
-router.post('/category/update/:id',function (req,res,next) {
-
-});
-router.post('/category/create',function (req,res,next) {
-
+    req.viewUrl='admin/category';
+    req.resData={categories:cacheData.categories};
+    next();
 });
 router.get('/post',function (req,res,next) {
     req.viewUrl='admin/post';

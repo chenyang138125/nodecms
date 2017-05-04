@@ -6,11 +6,12 @@ var router = express.Router();
 var response = require('../core/response');
 var userApi = require('../core/api/user');
 var postApi = require('../core/api/post');
+var adminApi = require('../core/api/admin');
 var encryption=require('../core/encryption');
 var config=require('../config/config');
 router.post("/login",function (req,res,next){
     userApi.login(req.body,req.session.user).then(function (data) {
-        if(req.body.rememberme=='on'){
+        if(req.body.remember=='on'){
             req.session.cookie.maxAge=new Date().getTime()+60*60*24*7;
         }
         req.session.user=data.data;
@@ -21,13 +22,33 @@ router.post("/login",function (req,res,next){
 });
 router.post('/loginout',function (req,res,next) {
     delete  req.session.user;
-    res.sendStatus(200);
+    res.json(response(0))
+});
+router.get('/posts',function (req,res,next) {
+    postApi.getAdminPostList(req.query).then(function (data) {
+        res.json(response(0,data));
+    })
 });
 router.post('/post',function (req,res,next) {
     req.body.type=config.wp_option.post_type.POST;
-    req.body.author=req.session.user.account;
+    req.body.author=req.session.user.nickname;
     postApi.postPost(req.body).then(function (data) {
         res.json(response(0,data));
+    })
+});
+router.delete("/category/:id",function (req,res,next) {
+    adminApi.deleteCategory(req.param("id")).then(function () {
+        res.json(response(0,{id:req.param("id")}));
+    })
+});
+router.put('/category/:id',function (req,res,next) {
+    adminApi.updateCategory(req.param("id"),req.body).then(function () {
+        res.json(response(0,{}))
+    })
+});
+router.post('/category/new',function (req,res,next) {
+    adminApi.createCategory(req.body.name,0).then(function (data) {
+        res.json(response(0,data))
     })
 });
 module.exports = router;

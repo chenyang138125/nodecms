@@ -16,15 +16,17 @@ var modules=require('./modules');
 var encryption=require('./core/encryption');
 var pjaxEjs=require('./core/pjaxEjs');
 var ueditor=require('./ueditor');
-modules.sequelize.sync().then(function () {
-    modules.user.findAll().then(function (data) {
-        if(data.length==0){
-            modules.user.create({account:'admin',password:encryption.md5Pwd('admin'),role:'admin',nickname:"系统管理员"});
-        }
-    })
+var init=require('./core/init');
+
+//设置跨域访问
+app.use(function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header("Access-Control-Allow-Headers", "Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With");
+    next();
 });
 
-
+init.init();
 pjaxEjs(app);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -48,14 +50,16 @@ app.use(session({
 }));
 
 
-app.use(require('less-middleware')(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(require('less-middleware')(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(express.static(path.join(__dirname, 'vueadmin')));
+//
+// app.use('/', views);
+// app.use('/admin',intercept.role,admin);
 
-app.use('/', views);
-app.use('/admin',intercept.role,admin);
-app.use('/v1',intercept.role,api);
-ueditor(app);
+app.use('/v1',api);
+// ueditor(app);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

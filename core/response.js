@@ -4,7 +4,7 @@
 module.exports=function (statue,data,msg) {
     return {
         code:statue,
-        data:data,
-        msg:msg
+        data:data || {},
+        msg:msg  || ""
     }
 };

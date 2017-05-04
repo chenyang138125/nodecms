@@ -2,7 +2,8 @@
  * Created by Administrator on 2017/4/25.
  */
 var Q=require("q");
-var moment=require('moment');
+var moment=require('date-utils');
+var config=require('../config/config');
 module.exports=function (sequelize, DataTypes) {
     var wp_post=sequelize.define("wp_post",{
         title:{type:DataTypes.STRING,allowNull:false},
@@ -34,6 +35,8 @@ module.exports=function (sequelize, DataTypes) {
                 }).then(function () {
                    return that.create(post);
                 }).then(function (postInstanse) {
+                    postInstanse.updatedAt=postInstanse.updatedAt.toFormat(config.wp_option.FORMAT);
+                    postInstanse.createdAt=postInstanse.createdAt.toFormat(config.wp_option.FORMAT);
                     defer.resolve(postInstanse)
                 },function (err) {
                     defer.reject(err);

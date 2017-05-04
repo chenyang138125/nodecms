@@ -18,7 +18,7 @@ module.exports = function (app) {
         js = [
             "/lib/jquery-3.2.1.min.js",
             "/lib/jquery-form.min.js",
-            "/javascripts/admin.js"
+            "/javascripts/admin.js",
         ];
         if (pjax) return "";
         js = js || [];

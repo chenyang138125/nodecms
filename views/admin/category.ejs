@@ -1,0 +1,103 @@
+<%- include heade %>
+<%- header(pjax, user) %>
+
+<h1>分类目录</h1>
+<section class="new-category">
+    <form method="post" action="/v1/category/new" id="new-category">
+        <h3>添加新分类</h3>
+        <div class="form-group">
+            <label for="ca-name">名称</label>
+            <input type="text" id="ca-name" name="name" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="ca-des">描述</label>
+            <textarea id="ca-des" name="description" class="form-control"></textarea>
+        </div>
+        <button type="submit">添加到新分类</button>
+    </form>
+</section>
+<section class="category-list">
+    <table class="table" id="ca-list">
+        <thead>
+        <tr>
+            <td>名称</td>
+            <td>描述</td>
+            <td>操作</td>
+        </tr>
+        </thead>
+        <tbody>
+        <% for(var i = 0;i < categories.length;i++){var one = categories[i]; %>
+        <tr id="tag-<%= one.id %>">
+            <td class="ca-name"><%= one.name %></td>
+            <td class="ca-des"><%= one.description %></td>
+            <td><a class="ca-edit" href="javascript:void(0)" data-id="<%= one.id %>">编辑</a> |
+                <a class="ca-delete" href="javascript:void(0)" data-id="<%= one.id %>">删除</a></td>
+        </tr>
+        <% } %>
+        </tbody>
+    </table>
+</section>
+<%- footer(pjax) %>
+<script>
+
+    $("#ca-list").on("click", '.ca-edit', function () {
+        $(".edit").remove();
+        var id=$(this).attr("data-id");
+        var tr=$("#tag-"+id);
+        var name=tr.find(".ca-name").text(),des=tr.find(".ca-name").text();
+        var contentHtml =
+            "<tr id='edit-"+id+"' class='edit'><td colspan='3'>" +
+            '<fieldset>' +
+            '<legend class="inline-edit-legend">' +
+            '编辑</legend>' +
+            '<div class="inline-edit-col">' +
+            '<label>' +
+            '<span class="title">名称</span>' +
+            '<span class="input-text-wrap">' +
+            '<input type="text"name="name"class="ptitle"value="'+name+'">' +
+            '</span>' +
+            '</label>' +
+            '<label>' +
+            '<span class="title">描述</span>' +
+            '<span class="input-text-wrap">' +
+            '<input type="text"name="description"class="ptitle"value="'+des+'">' +
+            '</span>' +
+            '</label>' +
+            '</div>' +
+            '</fieldset>'+
+            '<p> <button class="cancel">取消</button><button class="submit">跟新</button></p>'+
+            "</td></tr>";
+        tr.after(contentHtml);
+    });
+    $("#ca-list").on("click", '.ca-delete', function () {
+        $.$http.delete("/v1/category/" + $(this).attr("data-id"), function (data) {
+            $("#tag-"+data.id).remove();
+        })
+    })
+    $("#ca-list").on("click",'.edit .cancel',function () {
+            $(".edit").remove();
+    });
+    $("#ca-list").on("click",'.edit .submit',function () {
+        var editTr=$(".edit");
+        var id=editTr.attr("id").split('-')[1];
+        var name=editTr.find('[name=name]').val();
+        var des=editTr.find('[name=description]').val();
+        $.$http.put("/v1/category/" +id,{name:name,description:des}, function () {
+           var tagTr= $("#tag-"+id);
+           tagTr.find('.ca-name').html(name);
+           tagTr.find('.ca-des').html(des);
+           editTr.remove();
+        })
+    });
+    $("#new-category").cusAjaxForm(function (data) {
+        var newHtml= '<tr id="tag-'+data.id+'">'+
+            '<td class="ca-name">'+data.name+'</td>'+
+            '<td class="ca-des">'+data.description+'</td>'+
+            '<td><a class="ca-edit" href="javascript:void(0)" data-id="'+data.id+'">编辑</a> |'+
+            '<a class="ca-delete" href="javascript:void(0)" data-id="'+data.id+'">删除</a></td>'+
+            '</tr>';
+        $("#ca-list tbody").prepend(newHtml);
+    })
+</script>
+</body>
+</html>
