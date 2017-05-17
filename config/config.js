@@ -35,5 +35,5 @@ module.exports={
         EMPTY_ACCOUNT:{code:102,msg:"空账号"},
         ERR_SERVICE:{code:103,msg:"服务器错误"},
         OTHER_ERR:{code:104}
-    }
+    },
 };

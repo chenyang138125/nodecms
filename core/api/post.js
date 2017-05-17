@@ -8,6 +8,7 @@ var _ = require('underscore');
 var cache = require('../catcheData');
 var pinyin=require('pinyin');
 var moment=require('date-utils');
+var response=require('../../core/response');
 module.exports = {
     /**
      * 获取已发布文章列表 放回信息包含：标题，id，分类，标签，摘要，发布时间，跟新时间.
@@ -41,7 +42,7 @@ module.exports = {
     getAdminPostList: function (param) {
         var defer = Q.defer();
         this.findPosts(param).then(function (data) {
-            var result = {};
+           /* var result = {};
             var publishCount = 0,draftCount = 0,deleteCount = 0;
 
             data.rows.map(function (one) {
@@ -57,8 +58,8 @@ module.exports = {
             result.publishCount=publishCount;
             result.draftCount=publishCount;
             result.deleteCount=publishCount;
-            result.totalCount=data.count;
-            defer.resolve(result);
+            result.totalCount=data.count;*/
+            defer.resolve(data);
         });
         return defer.promise;
     },
@@ -138,6 +139,14 @@ module.exports = {
     },
     findOne:function (where) {
         return modules.wp_post.findOne({where:where});
+    },
+    deletePost:function (id) {
+      return modules.wp_post.destroy({where:{id:id}}).then(function (number) {
+          if(number==0){
+              return response(1,{},'不存在的文章')
+          }else {
+              return response(0)
+          }
+      })
     }
-
 };

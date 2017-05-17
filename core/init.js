@@ -12,6 +12,6 @@ module.exports={
                 }
             })
         });
-        adminApi.resetCatgoryCache();
+        // adminApi.resetCatgoryCache();
     }
 };

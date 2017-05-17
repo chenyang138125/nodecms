@@ -14,14 +14,14 @@ module.exports=function (sequelize, DataTypes) {
         tags:DataTypes.STRING,
         stick:DataTypes.BOOLEAN,
         type:DataTypes.STRING,
-        statue:DataTypes.INTEGER,
+        statue:DataTypes.STRING,
         author:DataTypes.STRING
     },{
         classMethods:{
             createPost:function (post) {
                 var defer=Q.defer();
                 var that=this;
-
+                if(!post.statue)post.statue=config.wp_option.post_statue.PUBLISH;
                 if(post.stick){
                     this.update({stick:false},{where:{stick:true},hooks:false});
                 }

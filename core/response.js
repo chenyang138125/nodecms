@@ -5,6 +5,6 @@ module.exports=function (statue,data,msg) {
     return {
         code:statue,
         data:data || {},
-        msg:msg  || ""
+        msg:msg  || statue==0?'ok':'error'
     }
 };

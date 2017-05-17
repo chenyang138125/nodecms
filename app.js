@@ -10,6 +10,7 @@ var bodyParser = require('body-parser');
 var api=require('./routes/api');
 var views=require('./routes/views');
 var admin=require('./routes/admin');
+var file=require('./routes/uploadFile');
 var intercept =require('./core/Intercept');
 var app = express();
 var modules=require('./modules');
@@ -20,7 +21,7 @@ var init=require('./core/init');
 
 //设置跨域访问
 app.use(function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
+    res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
     res.header("Access-Control-Allow-Headers", "Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With");
     next();
@@ -28,12 +29,13 @@ app.use(function(req, res, next) {
 
 init.init();
 pjaxEjs(app);
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+// app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -50,15 +52,17 @@ app.use(session({
 }));
 
 
-// app.use(require('less-middleware')(path.join(__dirname, 'public')));
-// app.use(express.static(path.join(__dirname, 'public')));
+app.use(require('less-middleware')(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(express.static(path.join(__dirname, 'vueadmin')));
+// app.use(express.static(path.join(__dirname, 'vueadmin')));
 //
 // app.use('/', views);
 // app.use('/admin',intercept.role,admin);
 
-app.use('/v1',api);
+ueditor(app);
+app.use('/v1',intercept.role,api);
+app.use('/v1/file',intercept.role,file);
 // ueditor(app);
 
 // catch 404 and forward to error handler

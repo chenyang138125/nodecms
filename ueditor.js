@@ -12,7 +12,7 @@ module.exports=function (app) {
 
     app.use("/ueditor/ue", ueditor(path.join(__dirname, 'public'), function(req, res, next) {
 
-        if(req.session.user && req.session.user.role=="admin"){
+        if(true){
             var imgDir = '/upload/img/' //默认上传地址为图片
             var ActionType = req.query.action;
             if (ActionType === 'uploadimage' || ActionType === 'uploadfile' || ActionType === 'uploadvideo') {
@@ -41,7 +41,5 @@ module.exports=function (app) {
         }else {
             res.sendStatus(401);
         }
-
-
     }));
 };
