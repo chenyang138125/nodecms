@@ -1,8 +1,63 @@
-//
-   Created by Administrator on 2017/5/25.
 extends layout
+
+block head
+    link(type="text/css",rel="stylesheet",href="/deps/swipe/swiper-3.4.2.min.css")
+
 block content
-    p 的斯科拉的撒进口量大胜靠德
+    //banner
+    .cus-banner
+        .swiper-container
+            .swiper-wrapper
+                .banner-item.swiper-slide
+                    .layered
+                        -each layer,index in layers
+                            .layered-item(style='top:'+index*40+'px;left:'+index*40+'px',data-content=layer.meta.content,data-bg=layer.meta.bg_img,id=layer.id)
+                                img.layered_img(src=layer.meta.layer_img)
+                    .banner-content=layers.pop().meta.content
+                    img.banner-bg.layered-banner-bg(src=layers.pop().meta.bg_img)
+                script(type='text/javascript').
+                    window.bannerNames=#{JSON.stringify(banners)};
+                -each banner in banners
+                    .banner-item.swiper-slide
+                        img.banner-bg.layered-banner-bg(src=banner.meta.bg_img)
+    //    九旅介绍
+    section.overview
+        .section-title
+            p
+                h3
+                    img.logo(src='/assets/images/logo.png')
+                    |九旅集团介绍
+                    small Jiu Lv Group Introduction
+        .d-hr
+            .o-item
+                h4 核心价值观
+                p.
+                    信任是我第三节课了及大连市；
+                    信任是我第三节课了及大连市；
+                    信任是我第三节课了及大连市；
+                    信任是我第三节课了及大连市；
+            .o-item
+                h4 核心价值观
+                p.
+                    信任是我第三节课了及大连市；
+                    信任是我第三节课了及大连市；
+                    信任是我第三节课了及大连市；
+                    信任是我第三节课了及大连市；
+            .o-item
+                h4 核心价值观
+                p.
+                    信任是我第三节课了及大连市；
+                    信任是我第三节课了及大连市；
+                    信任是我第三节课了及大连市；
+                    信任是我第三节课了及大连市；
+    section.business-map
+
+
+
+
+
 
 
 block footer
+    script(src="/deps/swipe/swiper-3.4.2.jquery.min.js")
+script(src="/javascripts/home.js")

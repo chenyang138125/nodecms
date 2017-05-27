@@ -17,9 +17,9 @@ var resetMenu=function (isTop) {
         }
         createMenuLink(menus);
         if(isTop){
-            cache.menus.topMenus=[{link:"sa",name:"ddd"}];
+            cache.menus.topMenus=menus;
         }else {
-            cache.menus.bottomMenus=[{link:"sa",name:"ddd"}];
+            cache.menus.bottomMenus=menus;
         }
     })
 }

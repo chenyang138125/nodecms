@@ -32,8 +32,8 @@ init.init();
 pjaxEjs(app);
 
 // view engine setup
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'jade');
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
 // app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -62,9 +62,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.use('/admin',intercept.role,admin);
 
 ueditor(app);
-// app.use('/',views);
 app.use('/v1',intercept.role,api);
 app.use('/v1/file',intercept.role,file);
+app.use('/',views);
 // ueditor(app);
 
 // catch 404 and forward to error handler

@@ -69,7 +69,7 @@ module.exports = {
         })
     },
 
-    findPosts: function (param) {
+    findPosts: function (param,hasMeta) {
         var where = {};
         var page = param.page || 0;
         var limit = param.limit || 20;
@@ -81,11 +81,20 @@ module.exports = {
         if (param.category) where.category = param.category;
         if (param.type) where.type = param.type;
         if (param.title) where.category = {$like: "%" + param.title + "%"};
+        var include=[];
+        if(hasMeta){
+            include=[{
+                model: modules.wp_postmeta,
+                required: false,
+                where: {meta_key: 'customField'}
+            }];
+        }
         return modules.wp_post.findAndCount({
             where: where,
             limit: limit,
             offset: page * limit,
-            paranoid: paranoid
+            paranoid: paranoid,
+            include:include
         })
     },
     findOne: function (where) {
