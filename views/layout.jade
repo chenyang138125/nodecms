@@ -1,0 +1,40 @@
+doctype html
+html
+    head
+        title 陈洋的网站
+        link(type="text/css",rel="stylesheet",href="/stylesheets/bootstrap.min.css")
+    body
+        header#top.navbar.navbar-static-top(rule="banner")
+            .container
+                .navbar-header
+                    button(class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false")
+                        span.sr-only Toggle navgation
+                        span.icon-bar
+                        span.icon-bar
+                        span.icon-bar
+                    a(href="http://localhost/wordpress/" class="navbar-brand" style="padding: 5px 15px")
+                        img(src="http://localhost/wordpress/wp-content/themes/twentyseventeen/assets/images/logo.png" class="img-responsive" style="height: 40px")
+                #bs-navbar.collapse.navbar-collapse
+                    ul.nav.navbar-nav.navbar-right
+                        -each menu in topMenus
+                            li.dropdown
+                                a(href=menu.link)
+                                    span #{menu.name}
+        .container
+            .content-area
+                main(id="main" class="site-main" role="main" style="width: 100%")
+                    block content
+        footer
+            .container
+                .row
+                    for menu in bottomMenus
+                        .col-xs-4.col-sm-3.col-md-3.col-lg-2
+                            h4 #{menu.name}
+                            if menu.children
+                                ul.list-unstyled
+                                   -each subMenu in menu.children
+                                        li
+                                            a(href=subMenu.link) #{subMenu.name}
+        script(src="/lib/jquery-3.2.1.min.js")
+        block footer
+
