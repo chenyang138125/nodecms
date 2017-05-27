@@ -7,7 +7,41 @@ var Q=require('q');
 var cache=require('../catcheData');
 var fs=require('fs');
 var path=require('path');
-module.exports={
+var resetMenu=function (isTop) {
+    admin.getOption(isTop?'option_menu_top':'option_menu_bottom').then(function (data) {
+        var menus;
+        try {
+            menus = JSON.parse(data.option_value);
+        }catch (e){
+            menus=[];
+        }
+        createMenuLink(menus);
+        if(isTop){
+            cache.menus.topMenus=[{link:"sa",name:"ddd"}];
+        }else {
+            cache.menus.bottomMenus=[{link:"sa",name:"ddd"}];
+        }
+    })
+}
+var createMenuLink=function (menus) {
+    menus.forEach(function (menu) {
+        switch (menu.type){
+            case '页面':
+                menu.link='/page/'+menu.id;
+                break;
+            case '文章分类':
+                menu.link='/posts/?category='+menu.id;
+                break;
+            case 'url':
+                menu.link=menu.url;
+                break;
+        }
+        if(menu.children && menu.children.length){
+            createMenuLink(menu.children);
+        }
+    });
+}
+var admin={
     createCategory:function (name,parent) {
        return modules.wp_category.create({name:name,type:"category",parent:0});
     },
@@ -26,13 +60,6 @@ module.exports={
             defer.reject(err);
         });
         return defer.promise;
-    },
-    updateMenu:function (content) {
-        if(typeof(content) != 'string') content=JSON.stringify(content);
-        return modules.wp_option.upsert({option_value:content},{where:{option_name:"menu"}})
-    },
-    getMenu:function () {
-        return modules.wp_option.findOne({where:{option_name:'menu'}})
     },
     getMediaInfo:function () {
         var deffer=Q.defer();
@@ -55,5 +82,23 @@ module.exports={
 
         });
         return deffer.promise;
+    },
+
+    setOption:function (key,value) {
+        if(typeof(value)=='object' || typeof(value)==='array')value=JSON.stringify(value);
+        return modules.wp_option.upsert({option_name:key,option_value:value}).then(function (data) {
+            if(key==='option_menu_top' || key=='option_menu_bottom'){
+                resetMenu(key==='option_menu_top')
+            }
+            return data;
+        })
+    },
+    getOption:function (key) {
+        return modules.wp_option.findOne({where:{option_name:key}});
+    },
+    initCache:function () {
+        resetMenu(true);
+        resetMenu(false);
     }
 };
+module.exports=admin;

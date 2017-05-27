@@ -24,6 +24,7 @@ fs
         var model = sequelize.import(path.join(__dirname, file));
         db[model.name] = model;
     });
+db.wp_post.hasMany(db.wp_postmeta,{foreignKey:'post_id'});
 Object.keys(db).forEach(function(modelName) {
     if ("associate" in db[modelName]) {
         db[modelName].associate(db);

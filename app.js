@@ -18,6 +18,7 @@ var encryption=require('./core/encryption');
 var pjaxEjs=require('./core/pjaxEjs');
 var ueditor=require('./ueditor');
 var init=require('./core/init');
+var cache=require('./core/catcheData');
 
 //设置跨域访问
 app.use(function(req, res, next) {
@@ -31,8 +32,8 @@ init.init();
 pjaxEjs(app);
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
 // app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -61,6 +62,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.use('/admin',intercept.role,admin);
 
 ueditor(app);
+// app.use('/',views);
 app.use('/v1',intercept.role,api);
 app.use('/v1/file',intercept.role,file);
 // ueditor(app);
@@ -80,7 +82,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('error',cache.menus);
 });
 
 module.exports = app;

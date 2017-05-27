@@ -3,8 +3,8 @@
  */
 module.exports=function (sequelize, DataTypes) {
     var wp_option=sequelize.define("wp_option",{
-            option_name:{type:DataTypes.STRING,unique:true},
-            option_value:DataTypes.TEXT,
+        option_name:{type:DataTypes.STRING,unique:true},
+        option_value:DataTypes.TEXT,
     },{
         timestamps:false
     });

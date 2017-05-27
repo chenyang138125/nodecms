@@ -5,5 +5,9 @@ module.exports = {
     categories: [],
     categoryMap: {},
     tags: [],
-    tagsMap: []
+    tagsMap: [],
+    menus:{
+        topMenus:[],
+        bottomMenus:[]
+    }
 };

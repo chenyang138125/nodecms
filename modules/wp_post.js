@@ -7,10 +7,9 @@ var config=require('../config/config');
 module.exports=function (sequelize, DataTypes) {
     var wp_post=sequelize.define("wp_post",{
         title:{type:DataTypes.STRING,allowNull:false},
-        link:{type:DataTypes.STRING,allowNull:false,unique:true},
         digest:DataTypes.TEXT,
         content:DataTypes.TEXT,
-        category:DataTypes.STRING,
+        category:DataTypes.INTEGER,
         tags:DataTypes.STRING,
         stick:DataTypes.BOOLEAN,
         type:DataTypes.STRING,
@@ -19,30 +18,15 @@ module.exports=function (sequelize, DataTypes) {
     },{
         classMethods:{
             createPost:function (post) {
-                var defer=Q.defer();
                 var that=this;
                 if(!post.statue)post.statue=config.wp_option.post_statue.PUBLISH;
                 if(post.stick){
-                    this.update({stick:false},{where:{stick:true},hooks:false});
+                    this.update({stick:false},{where:{stick:true},hooks:false}).then(function () {
+                        return that.create(post);
+                    });
+                }else {
+                    return that.create(post);
                 }
-                this.count({where:{link:post.link}}).then(function (number) {
-                    if(number>0) {
-                        var linkTemp=post.link.split('/');
-                        linkTemp.push(linkTemp.pop()+"-"+number+1);
-                        post.link=linkTemp.join("/")+"/"
-                    }
-                    return "";
-                }).then(function () {
-                   return that.create(post);
-                }).then(function (postInstanse) {
-                    postInstanse.updatedAt=postInstanse.updatedAt.toFormat(config.wp_option.FORMAT);
-                    postInstanse.createdAt=postInstanse.createdAt.toFormat(config.wp_option.FORMAT);
-                    defer.resolve(postInstanse)
-                },function (err) {
-                    defer.reject(err);
-                });
-
-                return defer.promise;
             },
             updatePost:function (post) {
                 if(post.stick){

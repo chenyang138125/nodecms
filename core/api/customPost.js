@@ -6,29 +6,54 @@
  */
 var modules = require('../../modules');
 module.exports = {
-    createCustom: function () {
-
+    modifyCustom:function (data,id) {
+        var mData={
+            option_name:'fields'+data.category,
+            option_value:JSON.stringify(data)
+        };
+        if(id){
+            return modules.wp_option.update(mData,{where:{id:id,option_name:{$like:"fields%"}}})
+        }else {
+          return  modules.wp_option.create(mData)
+        }
     },
-    updateCustom: function () {
-
+    findCustom:function (id) {
+       if(id){
+           return modules.wp_option.findOne({where:{id:id,option_name:{$like:"fields%"}}}).then(function (data) {
+               var result;
+               if(data && data.option_value){
+                   result=JSON.parse(data.option_value);
+                   result.id=data.id;
+               }
+               return result;
+           })
+       }else {
+            return modules.wp_option.findAll({where:{option_name:{$like:'fields%'}}}).then(function (data) {
+                var result=[];
+                data.forEach(function (one) {
+                    if(one.option_value) {
+                        var field=JSON.parse(one.option_value);
+                        field.id=one.id;
+                        result.push(field);
+                    }
+                });
+                return result;
+            })
+       }
     },
-    deleteCustom: function () {
-
+    findCustomByCategory:function (id) {
+        return modules.wp_option.findAll({where:{option_name:'fields'+id}}).then(function (data) {
+            var result=[];
+            data.forEach(function (one) {
+                if(one.option_value) {
+                    var fields=JSON.parse(one.option_value);
+                    result=result.concat(fields.fields);
+                }
+            });
+            return result;
+        })
     },
-    createContent:function () {
-        
-    },
-    updateContent:function () {
-        
-    },
-    deleteContent:function () {
-        
-    },
-    findCutomFild:function () {
-        
-    },
-    findCutomContent:function () {
-
+    deleteCutom:function (id) {
+        return modules.wp_option.destroy({where:{id:id,option_name:{$like:"fields%"}}});
     }
-
 };
